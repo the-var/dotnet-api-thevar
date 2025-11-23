@@ -1,5 +1,5 @@
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Models;
+//using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +25,22 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
 
 var app = builder.Build();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 // Classic Swagger UI
 app.UseSwagger();
